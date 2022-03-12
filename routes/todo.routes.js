@@ -19,10 +19,8 @@ router.post("/", async (req, res) => {
 });
 
 router.put("/:id", async (req, res) => {
-    const { id } = req.params;
-    const payload = req.body;
     try {
-        const updatedTodo = await Todo.findOneAndUpdate({ _id: id }, payload, { new: true });
+        const updatedTodo = await Todo.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true });
         res.status(200).json(updatedTodo);
     } catch (error) {res.status(500).json({ error: error.message })};
 });
