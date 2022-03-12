@@ -18,4 +18,13 @@ router.post("/", async (req, res) => {
     } catch (error) {res.status(500).json({ error: error.message })};
 });
 
+router.put("/:id", async (req, res) => {
+    const { id } = req.params;
+    const payload = req.body;
+    try {
+        const updatedTodo = await Todo.findOneAndUpdate({ _id: id }, payload, { new: true });
+        res.status(200).json(updatedTodo);
+    } catch (error) {res.status(500).json({ error: error.message })};
+});
+
 module.exports = router;
