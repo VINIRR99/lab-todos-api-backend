@@ -65,7 +65,7 @@ Test every single route using `postman` or `insomnia`
   
   This is a chalenge, you need to have your express server running in some port to be able to connect your react application using axios
 
-  Edit: [Link to iteration 4](https://github.com/VINIRR99/lab-todos-frontend)
+  **Edit**: [Link to iteration 4](https://github.com/VINIRR99/lab-todos-frontend)
   
 ![small](https://user-images.githubusercontent.com/26174871/132945098-6abe8ba4-e623-474a-9fa5-914842e3e622.gif)
 
