@@ -14,7 +14,7 @@ router.get("/", async (req, res) => {
 router.post("/", async (req, res) => {
     try {
         const newTodo = await Todo.create(req.body);
-        res.status(201).json(newTodo);
+        res.status(200).json(newTodo);
     } catch (error) {res.status(500).json({ error: error.message })};
 });
 
@@ -28,7 +28,7 @@ router.put("/:id", async (req, res) => {
 router.delete('/:id', async (req, res) => {
     try {
         await Todo.findByIdAndDelete(req.params.id);
-        res.status(204).json();
+        res.status(200).json();
     } catch (error) {res.status(500).json({ message: error.message })};
 });
 
