@@ -4,8 +4,16 @@ const connectDb = require("./config/db.config");
 connectDb();
 
 const express = require("express");
+const cors = require("cors");
 const app = express();
+
 app.use(express.json());
+
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", process.env.ACCESS_CONTROL_ALLOW_ORIGIN);
+    app.use(cors());
+    next();
+});
 
 app.use("/todo", require("./routes/todo.routes"));
 
