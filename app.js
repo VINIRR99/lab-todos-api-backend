@@ -9,15 +9,14 @@ const app = express();
 
 app.use(express.json());
 
-app.use(cors({
+const corsOptions = {
     origin: process.env.ACCESS_CONTROL_ALLOW_ORIGIN,
     methods: ["GET", "POST", "PUT", "DELETE"]
-}));
+};
+
+app.use(cors(corsOptions));
 
 app.use("/todo", require("./routes/todo.routes"));
 
-app.listen(process.env.PORT, () => console.log(`
-Server running on port: ${process.env.PORT}
-origin: ${process.env.ACCESS_CONTROL_ALLOW_ORIGIN}
-methods: ["GET", "POST", "PUT", "DELETE"]
-`));
+app.listen(process.env.PORT, () => console.log(`Server running on port: ${process.env.PORT}
+corsOptions:`, corsOptions));
