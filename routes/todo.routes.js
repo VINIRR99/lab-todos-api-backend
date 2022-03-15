@@ -20,7 +20,7 @@ router.post("/", async (req, res) => {
 
 router.put("/:id", async (req, res) => {
     try {
-        const updatedTodo = await Todo.findOneAndUpdate({ _id: req.params.id }, req.body, { new: true });
+        const updatedTodo = await Todo.findByIdAndUpdate(req.params.id, req.body, { new: true });
         res.status(200).json(updatedTodo);
     } catch (error) {res.status(500).json({ error: error.message })};
 });
