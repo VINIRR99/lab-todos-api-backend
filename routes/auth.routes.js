@@ -13,7 +13,7 @@ router.post("/signup", async (req, res) => {
         const { name, email, password } = req.body;
 
         const user = await User.findOne({ email });
-        if (user) throw new Error("Email already used");
+        if (user) throw new Error(emailError);
 
         const salt = await genSalt(12);
         const passwordHash = await hash(password, salt);
