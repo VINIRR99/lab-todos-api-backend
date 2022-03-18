@@ -7,6 +7,8 @@ const router = Router();
 const { genSalt, hash } = require("bcryptjs");
 
 router.post("/signup", async (req, res) => {
+    const emailError = "Email already used";
+
     try {
         const { name, email, password } = req.body;
 
@@ -19,7 +21,9 @@ router.post("/signup", async (req, res) => {
         await User.create({ name, email, passwordHash });
         res.status(200).json({ name, email });
     } catch (error) {
-        res.status(500).json({ error: error.message })
+        if (error.message === emailError) {
+            res.status(409).json({ error: error.message })
+        } else res.status(500).json({ error: error.message });
     };
 });
 
