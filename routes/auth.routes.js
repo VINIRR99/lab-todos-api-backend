@@ -27,8 +27,6 @@ router.post("/signup", async (req, res) => {
     };
 });
 
-const { sign } = require("jsonwebtoken");
-
 router.post("/login", async (req, res) => {
     const incorrectLogin = "Email or Password is invalid!";
 
@@ -45,6 +43,7 @@ router.post("/login", async (req, res) => {
 
         const payload = { _id, name, email, todos, createdAt, updatedAt, __v };
 
+        const { sign } = require("jsonwebtoken");
         const token = sign(payload, process.env.SECRET_JWT, { expiresIn: '1day'});
 
         res.status(200).json({ payload, token });

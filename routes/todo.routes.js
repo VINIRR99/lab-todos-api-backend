@@ -13,7 +13,15 @@ router.get("/", async (req, res) => {
 
 router.post("/", async (req, res) => {
     try {
-        const newTodo = await Todo.create(req.body);
+        const { _id } = await req.user;
+
+        const User = require("../models/User.model");
+        await User.findByIdAndUpdate(_id, { $push: { todos: _id } });
+
+        const { title } = await req.body;
+
+        const newTodo = await Todo.create({ title, user: _id });
+
         res.status(200).json(newTodo);
     } catch (error) {res.status(500).json({ error: error.message })};
 });
