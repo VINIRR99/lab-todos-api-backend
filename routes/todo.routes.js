@@ -6,23 +6,24 @@ const router = Router();
 
 router.get("/", async (req, res) => {
     try {
-        const allTodos = await Todo.find();
-        res.status(200).json(allTodos);
+        const { _id } = await req.user;
+        const userTodos = await Todo.find({ user: _id }, { title: 1, completed: 1 });
+        res.status(200).json(userTodos);
     } catch (error) {res.status(500).json({ error: error.message })}
 });
 
 router.post("/", async (req, res) => {
     try {
-        const { _id } = await req.user;
-
-        const User = require("../models/User.model");
-        await User.findByIdAndUpdate(_id, { $push: { todos: _id } });
+        const { _id: userId } = await req.user;
 
         const { title } = await req.body;
 
-        const newTodo = await Todo.create({ title, user: _id });
+        const { _id, completed } = await Todo.create({ title, user: userId });
 
-        res.status(200).json(newTodo);
+        const User = require("../models/User.model");
+        await User.findByIdAndUpdate(userId, { $push: { todos: userId } });
+
+        res.status(200).json({ _id, title, completed });
     } catch (error) {res.status(500).json({ error: error.message })};
 });
 

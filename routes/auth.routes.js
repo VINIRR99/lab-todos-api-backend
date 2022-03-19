@@ -6,6 +6,8 @@ const router = Router();
 
 const { genSalt, hash, compare } = require("bcryptjs");
 
+const { sign } = require("jsonwebtoken");
+
 router.post("/signup", async (req, res) => {
     const emailError = "Email already used";
 
@@ -18,8 +20,13 @@ router.post("/signup", async (req, res) => {
         const salt = await genSalt(12);
         const passwordHash = await hash(password, salt);
 
-        await User.create({ name, email, passwordHash });
-        res.status(200).json({ name, email });
+        const { _id, todos } = await User.create({ name, email, passwordHash });
+
+        const payload = { _id, name, email, todos };
+
+        const token = sign(payload, process.env.SECRET_JWT, { expiresIn: '1day'});
+
+        res.status(200).json({ payload, token });
     } catch (error) {
         if (error.message === emailError) {
             res.status(409).json({ error: error.message })
@@ -33,17 +40,16 @@ router.post("/login", async (req, res) => {
     try {
         const { email, password } = await req.body;
         
-        const user = await User.findOne({ email }).populate("todos");
+        const user = await User.findOne({ email }, { _id: 1, name: 1, passwordHash: 1, todos: 1 }).populate("todos");
         if (!user) throw new Error(incorrectLogin);
 
-        const { _id, name, passwordHash, todos, createdAt, updatedAt, __v } = await user;
+        const { _id, name, passwordHash, todos } = await user;
 
         const compareHash = await compare(password, passwordHash);
         if (!compareHash) throw new Error(incorrectLogin);
 
-        const payload = { _id, name, email, todos, createdAt, updatedAt, __v };
+        const payload = { _id, name, email, todos };
 
-        const { sign } = require("jsonwebtoken");
         const token = sign(payload, process.env.SECRET_JWT, { expiresIn: '1day'});
 
         res.status(200).json({ payload, token });
