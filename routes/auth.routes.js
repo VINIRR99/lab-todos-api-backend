@@ -1,6 +1,6 @@
 const { Router } = require('express');
 
-const User = require("../models/User");
+const User = require("../models/User.model");
 
 const router = Router();
 
@@ -27,19 +27,27 @@ router.post("/signup", async (req, res) => {
     };
 });
 
+const { sign } = require("jsonwebtoken");
+
 router.post("/login", async (req, res) => {
-    const incorrectLogin = "Email or Password is invalid";
+    const incorrectLogin = "Email or Password is invalid!";
 
     try {
         const { email, password } = await req.body;
         
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ email }).populate("todos");
         if (!user) throw new Error(incorrectLogin);
 
-        const compareHash = await compare(password, user.passwordHash);
+        const { _id, name, passwordHash, todos, createdAt, updatedAt, __v } = await user;
+
+        const compareHash = await compare(password, passwordHash);
         if (!compareHash) throw new Error(incorrectLogin);
 
-        res.status(200).json({ message: `User "${user.name}" loggedIn` });
+        const payload = { _id, name, email, todos, createdAt, updatedAt, __v };
+
+        const token = sign(payload, process.env.SECRET_JWT, { expiresIn: '1day'});
+
+        res.status(200).json({ payload, token });
     } catch (error) {
         if (error.message === incorrectLogin) {
             res.status(404).json({ error: error.message })
