@@ -1,3 +1,4 @@
+  **Edit**: [lab-todos-api-frontend](https://github.com/VINIRR99/lab-todos-frontend)
 ![logo_ironhack_blue 7](https://user-images.githubusercontent.com/23629340/40541063-a07a0a8a-601a-11e8-91b5-2f13e4e6b441.png)
 
 # Todos Api
@@ -64,8 +65,6 @@ Test every single route using `postman` or `insomnia`
   Now use what we learn on module 2 to create a React UI that consumes our routes on Api.
   
   This is a chalenge, you need to have your express server running in some port to be able to connect your react application using axios
-
-  **Edit**: [Link to iteration 4](https://github.com/VINIRR99/lab-todos-frontend)
   
 ![small](https://user-images.githubusercontent.com/26174871/132945098-6abe8ba4-e623-474a-9fa5-914842e3e622.gif)
 
