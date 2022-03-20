@@ -10,9 +10,12 @@ const { sign } = require("jsonwebtoken");
 
 router.post("/signup", async (req, res) => {
     const emailError = "Email already used";
+    const passwordRequired = "Password is required!";
 
     try {
         const { name, email, password } = await req.body;
+
+        if (password.length === 0) throw new Error(passwordRequired);
 
         const user = await User.findOne({ email });
         if (user) throw new Error(emailError);
@@ -28,9 +31,16 @@ router.post("/signup", async (req, res) => {
 
         res.status(200).json({ payload, token });
     } catch (error) {
-        if (error.message === emailError) {
-            res.status(409).json({ error: error.message })
-        } else res.status(500).json({ error: error.message });
+        switch (error.message) {
+            case emailError:
+                res.status(409).json({ error: error.message });
+                break;
+            case passwordRequired:
+                res.status(409).json({ error: error.message });
+                break;
+            default:
+                res.status(500).json({ error: error.message });
+        };
     };
 });
 
@@ -53,11 +63,7 @@ router.post("/login", async (req, res) => {
         const token = sign(payload, process.env.SECRET_JWT, { expiresIn: '1day'});
 
         res.status(200).json({ payload, token });
-    } catch (error) {
-        if (error.message === incorrectLogin) {
-            res.status(404).json({ error: error.message })
-        } else res.status(401).json({ error: error.message });
-    };
+    } catch (error) {res.status(401).json({ error: error.message })};
 });
 
 module.exports = router;

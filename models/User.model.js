@@ -11,7 +11,7 @@ const userSchema = new Schema(
             lowercase: true,
             trim: true
         },
-        passwordHash: { type: String, required: [true, 'Password is required.'] },
+        passwordHash: { type: String, required: true },
         todos: [{ type: Schema.Types.ObjectId, ref: "Todo" }]
     },
     { timestamps: true }
