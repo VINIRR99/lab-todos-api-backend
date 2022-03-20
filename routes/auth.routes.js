@@ -40,7 +40,7 @@ router.post("/login", async (req, res) => {
     try {
         const { email, password } = await req.body;
         
-        const user = await User.findOne({ email }, { _id: 1, name: 1, passwordHash: 1, todos: 1 }).populate("todos");
+        const user = await User.findOne({ email }, { name: 1, passwordHash: 1, todos: 1 }).populate("todos");
         if (!user) throw new Error(incorrectLogin);
 
         const { _id, name, passwordHash, todos } = await user;
