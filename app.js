@@ -10,13 +10,16 @@ const app = express();
 app.use(express.json());
 
 const corsOptions = {
-    origin: process.env.ACCESS_CONTROL_ALLOW_ORIGIN,
+    origin: [process.env.ACCESS_CONTROL_ALLOW_ORIGIN],
     methods: ["GET", "POST", "PUT", "DELETE"]
 };
 
 app.use(cors(corsOptions));
 
 app.use("/auth", require("./routes/auth.routes"));
+
+app.use(require("./middlewares/auth.middleware"));
+
 app.use("/todo", require("./routes/todo.routes"));
 
 app.listen(process.env.PORT, () => console.log(`Server running on port: ${process.env.PORT}
