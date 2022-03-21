@@ -7,15 +7,26 @@ const router = Router();
 const { genSalt, hash, compare } = require("bcryptjs");
 
 router.put("/", async (req, res) => {
-    const noInput = "No input!";
     const currentPasswordRequired = "Current Password is required!";
     const newPasswordRequired = "New Password is required!";
-    const reapetedPasswordRequired = "Reapeted password is required!";
+    const reapetedPasswordRequired = "Repeated password is required!";
     const passwordsAreDifferent = "Password checks are diferent!";
-    const currentPasswordInvalid = "Current password is invalid!"
+    const currentPasswordInvalid = "Current password is invalid!";
+    const noInput = "No input!";
 
     try {
-        const { name, email, currentPassword, newPassword1, newPassword2 } = await req.body;
+        const { name, email, currentPassword, newPassword, newPasswordRepeat } = await req.body;
+
+        if ((currentPassword.length === 0) && ((newPassword.length > 0) || (newPasswordRepeat.length > 0))) {
+            throw new Error(currentPasswordRequired);
+        };
+
+        if ((currentPassword.length > 0) && (newPassword.length === 0)) throw new Error(newPasswordRequired);
+        if ((currentPassword.length > 0) && (newPassword.length > 0) && (newPasswordRepeat.length === 0)) {
+            throw new Error(reapetedPasswordRequired);
+        };
+        if (newPassword !== newPasswordRepeat) throw new Error(passwordsAreDifferent);
+
         const { _id } = await req.user;
 
         const updatedData = {};
@@ -23,24 +34,13 @@ router.put("/", async (req, res) => {
         if (name.length > 0) updatedData.name = name;
         if (email.length > 0) updatedData.email = email;
 
-        if ((currentPassword.length === 0) && ((newPassword1.length > 0) || (newPassword2.length > 0))) {
-            throw new Error(currentPasswordRequired);
-        };
-
-        if ((currentPassword.length > 0) && (newPassword1.length === 0)) throw new Error(newPasswordRequired);
-        if ((currentPassword.length > 0) && (newPassword1.length > 0) && (newPassword2.length === 0)) {
-            throw new Error(reapetedPasswordRequired);
-        };
-
-        if ((currentPassword.length > 0) && (newPassword1.length > 0) && (newPassword2.length > 0)) {
-            if (newPassword1 !== newPassword2) throw new Error(passwordsAreDifferent);
-            
+        if (currentPassword.length > 0) {
             const { passwordHash } = await User.findById(_id, { _id: 0, passwordHash: 1 });
             const compareHash = await compare(currentPassword, passwordHash);
             if (!compareHash) throw new Error(currentPasswordInvalid);
 
             const salt = await genSalt(12);
-            updatedData.passwordHash = await hash(newPassword1, salt);
+            updatedData.passwordHash = await hash(newPassword, salt);
         };
 
         if (Object.keys(updatedData).length === 0) throw new Error(noInput);
