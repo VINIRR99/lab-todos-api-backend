@@ -7,42 +7,6 @@ const router = Router();
 const { genSalt, hash, compare } = require("bcryptjs");
 
 const { sign } = require("jsonwebtoken");
-/*
-router.post("/signup", async (req, res) => {
-    const emailError = "Email already used";
-    const passwordRequired = "Password is required!";
-
-    try {
-        const { name, email, password } = await req.body;
-
-        if (password.length === 0) throw new Error(passwordRequired);
-
-        const user = await User.findOne({ email });
-        if (user) throw new Error(emailError);
-
-        const salt = await genSalt(12);
-        const passwordHash = await hash(password, salt);
-
-        const { _id, todos } = await User.create({ name, email, passwordHash });
-
-        const payload = { _id, name, email, todos };
-
-        const token = sign(payload, process.env.SECRET_JWT, { expiresIn: '1day'});
-
-        res.status(200).json({ payload, token });
-    } catch (error) {
-        switch (error.message) {
-            case emailError:
-                res.status(409).json({ error: error.message });
-                break;
-            case passwordRequired:
-                res.status(409).json({ error: error.message });
-                break;
-            default:
-                res.status(500).json({ error: error.message });
-        };
-    };
-}); */
 
 router.post("/signup", async (req, res) => {
     const passwordRequired = "Password is required!";
